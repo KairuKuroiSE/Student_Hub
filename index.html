@@ -13,7 +13,8 @@
         <div class="sidebar">
             <div class="sidebar-logo">Student Hub</div>
             <ul class="sidebar-nav">
-                <li><a href="./Login.html">Login</a></li>
+                <!-- Disregard this list, Final-Output is a Single-Page Application -->
+                <li><a href="./pages/login.html">Login</a></li>
                 <li><a href="Register.html">Register</a></li>
                 <li><a href="Note.html">Notes</a></li>
                 <li><a href="Checklist.html">Checklist</a></li>
@@ -23,7 +24,13 @@
 
         <div class="main-content">
             <header>
-                <h1>Student Hub</h1>
+                <div class="header-content">
+                    <h1>Student Hub</h1>
+                    <div id="userSection" style="display: none;">
+                        <span id="welcomeMessage"></span>
+                        <button id="logoutButton">Logout</button>
+                    </div>
+                </div>
             </header>
 
             <main>
