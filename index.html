@@ -1,64 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Hub - Home</title>
-    <link rel="stylesheet" href="./style/style.css">
+    <title>Student Hub</title>
+    <link rel="stylesheet" href="./styles/style.css">
 </head>
-
 <body>
-    <div class="container">
-        <div class="sidebar">
-            <div class="sidebar-logo">Student Hub</div>
-            <ul class="sidebar-nav">
-                <!-- Disregard this list, Final-Output is a Single-Page Application -->
-                <li><a href="./pages/login.html">Login</a></li>
-                <li><a href="Register.html">Register</a></li>
-                <li><a href="Note.html">Notes</a></li>
-                <li><a href="Checklist.html">Checklist</a></li>
-                <li><a href="Timetable.html">Timetable</a></li>
-            </ul>
-        </div>
-
-        <div class="main-content">
-            <header>
-                <div class="header-content">
-                    <h1>Student Hub</h1>
-                    <div id="userSection" style="display: none;">
-                        <span id="welcomeMessage"></span>
-                        <button id="logoutButton">Logout</button>
-                    </div>
-                </div>
-            </header>
-
-            <main>
-                <p>Your personal space to organize notes, manage tasks, and stay productive, all in one place!</p>
-
-                <div class="features">
-                    <div class="feature-card">
-                        <h3>Take Notes</h3>
-                        <p>Capture your ideas, class notes and important information effortlessly so you don't miss out on what's going on</p>
-                    </div>
-                    <div class="feature-card">
-                        <h3>Manage Tasks</h3>
-                        <p>Create and track your to-do lists with ease. No more pondering on what you need to do.</p>
-                    </div>
-                    <div class="feature-card">
-                        <h3>Stay Organized</h3>
-                        <p>Use our integrated calendar and task reminders to keep on top of deadlines.</p>
-                    </div>
-                </div>
-            </main>
-        </div>
+<div class="container">
+    <div class="sidebar">
+        <div class="sidebar-logo">Student Hub</div>
+        <nav class="sidebar-nav">
+            <nav class="sidebar-nav">
+                <button id="homeBtn" class="nav-btn">Home</button>
+                <button id="notesBtn" class="nav-btn">Notes</button>
+                <button id="tasksBtn" class="nav-btn">Tasks</button>
+                <button id="timetableBtn" class="nav-btn">Timetable</button>
+                <button id="profileBtn" class="nav-btn">Change Password</button>
+                <button id="logoutBtn" class="nav-btn">Logout</button>
+            </nav>
+        </nav>
     </div>
 
-    <footer>
-        &copy; 2024 Student Hub. All rights reserved.
-    </footer>
+    <div class="main-content">
+        <!-- Auth View -->
+        <div id="authView" class="view">
+            <div class="auth-box">
+                <h2 id="authTitle">Login to Student Hub</h2>
+                <form id="authForm">
+                    <input type="email" id="email" placeholder="Email" required>
+                    <input type="password" id="password" placeholder="Password" required>
+                    <div id="registerFields" style="display: none;">
+                        <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+                        <input type="text" id="displayName" placeholder="Display Name" required>
+                    </div>
+                    <button type="submit" id="authSubmitBtn">Login</button>
+                    <p id="forgotPassword" class="clickable">Forgot Password?</p>
+                    <p id="authToggle" class="clickable">New user? Register here</p>
+                </form>
+            </div>
+        </div>
 
-    <script type="module" src="./script/script.js"></script>
+        <!-- Home View -->
+        <div id="homeView" class="view hidden">
+            <div class="home-container">
+                <div class="welcome-section">
+                    <h1>Welcome, <span id="userDisplayName">Student</span>!</h1>
+                    <p class="date" id="currentDate"></p>
+                </div>
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <h3>Recent Notes</h3>
+                        <div id="recentNotes" class="dashboard-content"></div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>Upcoming Tasks</h3>
+                        <div id="upcomingTasks" class="dashboard-content"></div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>Today's Classes</h3>
+                        <div id="todayClasses" class="dashboard-content"></div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>Quick Actions</h3>
+                        <div class="quick-actions">
+                            <button onclick="showView('notesView')" class="action-btn">New Note</button>
+                            <button onclick="showView('tasksView')" class="action-btn">Add Task</button>
+                            <button onclick="showView('timetableView')" class="action-btn">View Schedule</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notes View -->
+        <div id="notesView" class="view hidden">
+            <div class="feature-container">
+                <div class="sidebar-feature">
+                    <button id="newNoteBtn" class="action-btn">New Note</button>
+                    <div id="notesList" class="list-container"></div>
+                </div>
+                <div class="content-area">
+                    <input type="text" id="noteTitle" placeholder="Note Title" class="title-input">
+                    <div id="noteContent" contenteditable="true" class="content-editable"></div>
+                    <button id="saveNoteBtn" class="action-btn">Save Note</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tasks View -->
+        <div id="tasksView" class="view hidden">
+            <div class="feature-container">
+                <div class="add-item">
+                    <input type="text" id="taskInput" placeholder="New task" class="task-input">
+                    <input type="date" id="taskDueDate" class="date-input">
+                    <button id="addTaskBtn" class="action-btn">Add Task</button>
+                </div>
+                <div id="tasksList" class="list-container"></div>
+            </div>
+        </div>
+
+        <!-- Timetable View -->
+        <div id="timetableView" class="view hidden">
+            <div class="feature-container">
+                <div class="timetable-header">
+                    <button id="addClassBtn" class="action-btn">Add Class</button>
+                </div>
+                <div id="timetableGrid" class="timetable-grid"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="module" src="./scripts/script.js"></script>
 </body>
-
 </html>

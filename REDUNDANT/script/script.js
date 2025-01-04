@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
             userSection.style.display = 'block';
         } else {
             // No user is signed in, redirect to login
-            window.location.href = './pages/login.html';
+            window.location.href = '../pages/login.html';
         }
     });
 
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
         logoutButton.addEventListener('click', async () => {
             try {
                 await signOut(auth);
-                window.location.href = './pages/login.html';
+                window.location.href = '../pages/login.html';
             } catch (error) {
                 console.error('Logout error', error);
             }
