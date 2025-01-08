@@ -62,7 +62,14 @@ async function registerUser(email, password, confirmPassword, displayName) {
 }
 
 async function loginUser(email, password) {
-    return await signInWithEmailAndPassword(auth, email, password);
+    try {
+        const result = await signInWithEmailAndPassword(auth, email, password);
+        console.log("Login successful:", result);
+        return result;
+    } catch (error) {
+        console.error("Login error:", error.code, error.message);
+        throw error;
+    }
 }
 
 async function resetPassword(email) {
@@ -252,10 +259,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Auth form toggle
     document.getElementById('authToggle').addEventListener('click', () => {
         isRegistering = !isRegistering;
-        document.getElementById('registerFields').style.display = isRegistering ? 'block' : 'none';
+        const registerFields = document.getElementById('registerFields');
+        registerFields.style.display = isRegistering ? 'block' : 'none';
+
+        // Toggle required attributes
+        document.getElementById('confirmPassword').required = isRegistering;
+        document.getElementById('displayName').required = isRegistering;
+
+        // Reset form
+        document.getElementById('authForm').reset();
+
         document.getElementById('authTitle').textContent = isRegistering ? 'Register for Student Hub' : 'Login to Student Hub';
         document.getElementById('authSubmitBtn').textContent = isRegistering ? 'Register' : 'Login';
         document.getElementById('authToggle').textContent = isRegistering ? 'Already have an account? Login here' : 'New user? Register here';
+        document.getElementById('forgotPassword').style.display = isRegistering ? 'none' : 'block';
     });
 
     // Auth form submission
@@ -268,9 +285,17 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isRegistering) {
                 const confirmPassword = document.getElementById('confirmPassword').value;
                 const displayName = document.getElementById('displayName').value;
+
+                if (!email || !password || !confirmPassword || !displayName) {
+                    throw new Error('All fields are required for registration');
+                }
+
                 await registerUser(email, password, confirmPassword, displayName);
                 alert('Registration successful! Welcome to Student Hub!');
             } else {
+                if (!email || !password) {
+                    throw new Error('Email and password are required');
+                }
                 await loginUser(email, password);
             }
             document.getElementById('authForm').reset();
@@ -326,7 +351,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('saveNoteBtn')?.addEventListener('click', () => {
         const title = document.getElementById('noteTitle').value;
         const content = document.getElementById('noteContent').innerHTML;
-        saveNote(title, content);
+        if (title && content) {
+            saveNote(title, content);
+        } else {
+            alert('Please enter both title and content for the note');
+        }
     });
 
     // Task management
@@ -337,62 +366,58 @@ document.addEventListener('DOMContentLoaded', () => {
             addTask(title, dueDate);
             document.getElementById('taskInput').value = '';
             document.getElementById('taskDueDate').value = '';
+        } else {
+            alert('Please enter both task title and due date');
         }
     });
 
-    // Timetable Management (MY OLD CODE WON'T WORK ANYMORE??
-    // Timetable Functionality
-    const timetableGrid = document.getElementById('timetableGrid');
+    // Timetable Management
     document.getElementById('timetableBtn').addEventListener('click', () => {
         showView('timetableView');
         loadTimetable();
     });
 
-    document.getElementById('addClassBtn').addEventListener('click', () => {
-        const day = prompt("Enter the day:");
-        const time = prompt("Enter the time:");
-        const subject = prompt("Enter the subject:");
-        const room = prompt("Enter the room:");
-        if (day && time && subject && room) {
-            addClass(day, time, subject, room);
-        } else {
-            alert("All fields are required!");
-        }
-    });
-
-    async function addClass(day, time, subject, room) {
-        try {
-            const userId = auth.currentUser?.uid;
-            if (!userId) {
-                alert("You must be logged in to add a class!");
-                return;
-            }
-            await addDoc(collection(db, 'timetable'), { userId, day, time, subject, room });
-            alert("Class added successfully!");
-            loadTimetable();
-        } catch (error) {
-            console.error("Error adding class:", error);
-            alert("Failed to add class. Please try again later.");
-        }
-    }
-
     async function loadTimetable() {
         try {
-            timetableGrid.innerHTML = ''; // Clear grid
+            const timetableDiv = document.getElementById('timetable');
+            if (!timetableDiv) return;
+
             const userId = auth.currentUser?.uid;
             if (!userId) {
                 alert("You must be logged in to view the timetable!");
                 return;
             }
+
             const q = query(collection(db, 'timetable'), where('userId', '==', userId));
             const querySnapshot = await getDocs(q);
+
+            // Initialize timetable
+            const timetable = new Timetable();
+            timetable.setScope(9, 18); // 9 AM to 6 PM
+
+            // Set up days
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+            timetable.addLocations(days);
+
+            // Add events from Firebase
             querySnapshot.forEach(doc => {
-                const { day, time, subject, room } = doc.data();
-                const cell = document.createElement('div');
-                cell.className = 'grid-cell has-class';
-                cell.textContent = `${day} - ${time}: ${subject} (${room})`;
-                timetableGrid.appendChild(cell);
+                const classData = doc.data();
+                const [hours, minutes] = classData.time.split(':').map(Number);
+                const startDate = new Date(2025, 0, 8, hours, minutes);
+                const endDate = new Date(2025, 0, 8, hours + 1, minutes); // Assuming 1-hour classes
+
+                timetable.addEvent(
+                    `${classData.subject} (Room ${classData.room})`,
+                    classData.day,
+                    startDate,
+                    endDate
+                );
             });
+
+            // Render timetable
+            const renderer = new Timetable.Renderer(timetable);
+            renderer.draw('#timetable');
+
         } catch (error) {
             console.error("Error loading timetable:", error);
             alert("Failed to load timetable. Please check your connection.");
@@ -419,4 +444,4 @@ onAuthStateChanged(auth, async (user) => {
 
 
 // Initialize theme
-document.addEventListener('DOMContentLoaded', initializeTheme);
+// document.addEventListener('DOMContentLoaded', initializeTheme);

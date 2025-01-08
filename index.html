@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Hub</title>
     <link rel="stylesheet" href="./styles/style.css">
+    <link rel="stylesheet" href="./bower_components/timetable.js/dist/styles/timetablejs.css">
 </head>
 <body>
 <div class="container">
@@ -28,11 +29,11 @@
             <div class="auth-box">
                 <h2 id="authTitle">Login to Student Hub</h2>
                 <form id="authForm">
-                    <input type="email" id="email" placeholder="Email" required>
-                    <input type="password" id="password" placeholder="Password" required>
+                    <input type="email" name="email" id="email" placeholder="Email" required>
+                    <input type="password" name="password" id="password" placeholder="Password" required>
                     <div id="registerFields" style="display: none;">
-                        <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
-                        <input type="text" id="displayName" placeholder="Display Name" required>
+                        <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password" required>
+                        <input type="text" name="displayName" id="displayName" placeholder="Display Name" required>
                     </div>
                     <button type="submit" id="authSubmitBtn">Login</button>
                     <p id="forgotPassword" class="clickable">Forgot Password?</p>
@@ -104,13 +105,28 @@
         <div id="timetableView" class="view hidden">
             <div class="feature-container">
                 <div class="timetable-header">
-                    <button id="addClassBtn" class="action-btn">Add Class</button>
-                </div>
-                <div id="timetableGrid" class="timetable-grid"></div>
+                <div id="timetable"></div>
             </div>
         </div>
     </div>
 </div>
+</div>
+
 <script type="module" src="./scripts/script.js"></script>
+<script src="bower_components/timetable.js/dist/scripts/timetable.js"></script>
+
+<script>
+    // Create the timetable
+    const timetable = new Timetable();
+    timetable.setScope(9, 18);
+
+    timetable.addLocations(['Loc1', 'Loc2', 'Loc3', 'Loc4', 'Loc5']);
+
+    timetable.addEvent('Meeting', 'Loc1', new Date(2025, 0, 8, 10, 0), new Date(2025, 0, 8, 11, 0));
+    timetable.addEvent('Lunch', 'Loc2', new Date(2025, 0, 8, 13, 0), new Date(2025, 0, 8, 14, 0));
+
+    const renderer = new Timetable.Renderer(timetable);
+    renderer.draw('#timetable');
+</script>
 </body>
 </html>
