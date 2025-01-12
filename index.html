@@ -5,21 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Hub</title>
     <link rel="stylesheet" href="./styles/style.css">
-    <link rel="stylesheet" href="./bower_components/timetable.js/dist/styles/timetablejs.css">
 </head>
 <body>
 <div class="container">
     <div class="sidebar">
         <div class="sidebar-logo">Student Hub</div>
         <nav class="sidebar-nav">
-            <nav class="sidebar-nav">
-                <button id="homeBtn" class="nav-btn">Home</button>
-                <button id="notesBtn" class="nav-btn">Notes</button>
-                <button id="tasksBtn" class="nav-btn">Tasks</button>
-                <button id="timetableBtn" class="nav-btn">Timetable</button>
-                <button id="profileBtn" class="nav-btn">Change Password</button>
-                <button id="logoutBtn" class="nav-btn">Logout</button>
-            </nav>
+            <button id="homeBtn" class="nav-btn">Home</button>
+            <button id="notesBtn" class="nav-btn">Notes</button>
+            <button id="tasksBtn" class="nav-btn">Tasks</button>
+            <button id="timetableBtn" class="nav-btn">Timetable</button>
+            <button id="logoutBtn" class="nav-btn">Logout</button>
         </nav>
     </div>
 
@@ -29,15 +25,9 @@
             <div class="auth-box">
                 <h2 id="authTitle">Login to Student Hub</h2>
                 <form id="authForm">
-                    <input type="email" name="email" id="email" placeholder="Email" required>
-                    <input type="password" name="password" id="password" placeholder="Password" required>
-                    <div id="registerFields" style="display: none;">
-                        <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password" required>
-                        <input type="text" name="displayName" id="displayName" placeholder="Display Name" required>
-                    </div>
+                    <input type="email" id="email" placeholder="Email" required>
+                    <input type="password" id="password" placeholder="Password" required>
                     <button type="submit" id="authSubmitBtn">Login</button>
-                    <p id="forgotPassword" class="clickable">Forgot Password?</p>
-                    <p id="authToggle" class="clickable">New user? Register here</p>
                 </form>
             </div>
         </div>
@@ -65,9 +55,9 @@
                     <div class="dashboard-card">
                         <h3>Quick Actions</h3>
                         <div class="quick-actions">
-                            <button onclick="showView('notesView')" class="action-btn">New Note</button>
-                            <button onclick="showView('tasksView')" class="action-btn">Add Task</button>
-                            <button onclick="showView('timetableView')" class="action-btn">View Schedule</button>
+                            <button id="quickNewNote" class="action-btn">New Note</button>
+                            <button id="quickAddTask" class="action-btn">Add Task</button>
+                            <button id="quickViewSchedule" class="action-btn">View Schedule</button>
                         </div>
                     </div>
                 </div>
@@ -104,29 +94,61 @@
         <!-- Timetable View -->
         <div id="timetableView" class="view hidden">
             <div class="feature-container">
-                <div class="timetable-header">
-                <div id="timetable"></div>
+                <h1 class="timetable-header"> Timetable</h1>
+                <table>
+                    <tr>
+                        <!-- To add more days or lessen days just use <th> </th> -->
+                        <th>Day</th>
+                        <th>I</th>
+                        <th>II</th>
+                        <th>III</th>
+                        <th>IV</th>
+                        <th>V</th>
+                        <th>VI</th>
+                        <th>VII</th>
+                    </tr>
+                    <tr>
+                        <td class="focus">Monday</td>
+                        <td>Subject 1</td>
+                        <td>Subject 2</td>
+                        <td>Subject 3</td>
+                        <td rowspan="6" class="multicell">Lunch</td>
+                        <td colspan="3" class="multicell">Subject 4</td>
+                    </tr>
+                    <tr>
+                        <td class="focus">Tuesday</td>
+                        <td colspan="3" class="multicell">Subject 1</td>
+                        <td>Subject 2</td>
+                        <td>Subject 3</td>
+                        <td>Subject 4</td>
+                    </tr>
+                    <tr>
+                        <td class="focus">Wednesday</td>
+                        <td>Subject 1</td>
+                        <td>Subject 2</td>
+                        <td>Subject 3</td>
+                        <td> Subject 4</td>
+                        <td colspan="2" class="multicell">Subject 5</td>
+                    </tr>
+                    <tr>
+                        <td class="focus">Thursday</td>
+                        <td>Subject 1</td>
+                        <td>Subject 2</td>
+                        <td>Subject 3</td>
+                        <td colspan="3" class="multicell"> Subject 4</td>
+                    </tr>
+                    <tr>
+                        <td class="focus">Friday</td>
+                        <td>Subject 1</td>
+                        <td>Subject 2</td>
+                        <td>Subject 3</td>
+                        <td colspan="3" class="multicell"> Subject 4</td>
+                    </tr>
+                </table>
             </div>
         </div>
     </div>
 </div>
-</div>
-
-<script type="module" src="./scripts/script.js"></script>
-<script src="bower_components/timetable.js/dist/scripts/timetable.js"></script>
-
-<script>
-    // Create the timetable
-    const timetable = new Timetable();
-    timetable.setScope(9, 18);
-
-    timetable.addLocations(['Loc1', 'Loc2', 'Loc3', 'Loc4', 'Loc5']);
-
-    timetable.addEvent('Meeting', 'Loc1', new Date(2025, 0, 8, 10, 0), new Date(2025, 0, 8, 11, 0));
-    timetable.addEvent('Lunch', 'Loc2', new Date(2025, 0, 8, 13, 0), new Date(2025, 0, 8, 14, 0));
-
-    const renderer = new Timetable.Renderer(timetable);
-    renderer.draw('#timetable');
-</script>
+<script src="./scripts/script.js"></script>
 </body>
 </html>
